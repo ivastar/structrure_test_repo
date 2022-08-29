@@ -1,23 +1,41 @@
-
 import numpy as np
 
-def ballardip (params, pos, etc):
+
+def ballardip(params, position, etc):
+    """
+    This function implements the "Ballar Dip" (ref.)
+
+    Prameters:
+    params: sigmay, sigmax, nbins
+    pos:
+    etc:
+
+    Returns:
+    weight
+
+    """
     sigmay, sigmax, nbins = params
     y, x, q = position
     flux = etc[0]
     nobj = y.size
-    
-    weight  = np.ones(nobj)
+
+    weight = np.ones(nobj)
     for i in range(nbins):
-        start   = int(1.*i*nobj/nbins)
-        end     = int(1.*(i+1)*nobj/nbins)
-        s       = np.ones(nobj)
+        start = int(1.0 * i * nobj / nbins)
+        end = int(1.0 * (i + 1) * nobj / nbins)
+        s = np.ones(nobj)
         s[start:end] = 0
         biny = np.mean(y[start:end])
         binx = np.mean(x[start:end])
-        weight[start:end] = sum(np.exp(-0.5*((x-binx)/sigmax)**2) * \
-                                np.exp(-0.5*((y-biny)/sigmay)**2)*flux*s) / \
-                            sum(np.exp(-0.5*((x-binx)/sigmax)**2) * \
-                                np.exp(-0.5*((y-biny)/sigmay)**2)*s)
-    
+        weight[start:end] = sum(
+            np.exp(-0.5 * ((x - binx) / sigmax) ** 2)
+            * np.exp(-0.5 * ((y - biny) / sigmay) ** 2)
+            * flux
+            * s
+        ) / sum(
+            np.exp(-0.5 * ((x - binx) / sigmax) ** 2)
+            * np.exp(-0.5 * ((y - biny) / sigmay) ** 2)
+            * s
+        )
+
     return weight
